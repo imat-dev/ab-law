@@ -38,7 +38,7 @@ export class S3Service {
 
 
   testfunction() {
-    
+    console.log('hey')
   }
 
 
