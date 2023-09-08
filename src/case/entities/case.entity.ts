@@ -1,6 +1,7 @@
 import { SchemaFactory, Schema, Prop } from '@nestjs/mongoose';
 import { Document, Schema as MongooseSchema } from 'mongoose';
-import { User } from './user.entity';
+import { User } from '../../auth/entities/user.entity';
+import { LegalDocument } from './legal-document.entity';
 
 export enum CaseStatus {
   Ongoing = 'ongoing',
@@ -63,6 +64,11 @@ export class Case extends Document {
 
   @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'User' })
   lawyer: User;
+
+  @Prop({
+    type: [{ type: MongooseSchema.Types.ObjectId, ref: LegalDocument.name }],
+  })
+  documents: LegalDocument;
 }
 
 export const CaseSchema = SchemaFactory.createForClass(Case);

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Case } from 'entities/case.entity';
+import { Case } from 'src/case/entities/case.entity';
 import { Model } from 'mongoose';
 import { CreateCaseDto } from './dto/create-case.dto';
 

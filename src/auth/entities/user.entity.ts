@@ -1,6 +1,6 @@
 import { SchemaFactory, Schema, Prop } from '@nestjs/mongoose';
 import { Document, Schema as MongooseSchema } from 'mongoose';
-import { Case } from './case.entity';
+import { Case } from '../../case/entities/case.entity';
 
 export enum UserRole {
   Admin = 'admin',

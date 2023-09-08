@@ -26,7 +26,7 @@ export class S3Service {
       Body: file.buffer,
     };
 
-    return this.s3.upload(params).promise();
+    return await this.s3.upload(params).promise();
   }
 
   filenameToS3Key(filename: string): string {
