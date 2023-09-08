@@ -7,7 +7,7 @@ import {
 } from '@nestjs/common';
 import { AuthGuardLocal } from './strategy/auth.guard.local';
 import { CurrentUser } from './strategy/current.user.decorator';
-import { User } from 'entities/user.entity';
+import { User } from 'src/auth/entities/user.entity';
 import { AuthService } from './auth.service';
 import { AuthenticatedUser } from './strategy/auth.guard.jwt';
 

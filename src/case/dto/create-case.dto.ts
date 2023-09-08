@@ -6,7 +6,7 @@ import {
   IsMongoId,
   IsNotEmpty,
 } from 'class-validator';
-import { CaseType, ClientType } from 'entities/case.entity';
+import { CaseType, ClientType } from 'src/case/entities/case.entity';
 
 export class CreateCaseDto {
   @IsNotEmpty()
