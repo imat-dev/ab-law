@@ -36,5 +36,10 @@ export class S3Service {
     return key;
   }
 
-  
+
+  testfunction() {
+    
+  }
+
+
 }
