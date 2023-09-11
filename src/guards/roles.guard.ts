@@ -2,12 +2,10 @@ import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { Reflector } from '@nestjs/core';
 import { Roles } from './roles.decorator';
-import { JwtService } from '@nestjs/jwt';
 import { Logger } from '@nestjs/common';
 
 @Injectable()
 export class RolesGuard implements CanActivate {
-	private readonly jwtService = new JwtService();
 	private readonly logger = new Logger(RolesGuard.name);
 
 	constructor(private readonly reflector: Reflector) {}

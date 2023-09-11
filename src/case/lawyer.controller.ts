@@ -3,9 +3,7 @@ import {
   Get,
   NotFoundException,
   Param,
-  Request,
   UseGuards,
-  UsePipes,
 } from '@nestjs/common';
 import { User } from 'src/auth/entities/user.entity';
 import { Roles } from 'src/guards/roles.decorator';
@@ -13,7 +11,6 @@ import { RolesGuard } from 'src/guards/roles.guard';
 import { AuthenticatedUser } from 'src/auth/strategy/auth.guard.jwt';
 import { CurrentUser } from 'src/auth/strategy/current.user.decorator';
 import { CaseService } from './case.service';
-import mongoose from 'mongoose';
 import { ObjectIdValidationPipe } from 'src/pipes/valid-object-id';
 
 @Controller('lawyer')

@@ -18,6 +18,7 @@ import { S3Service } from 'src/aws/s3/s3.service';
 import { ObjectIdValidationPipe } from 'src/pipes/valid-object-id';
 import { UploadDocumentDto } from './dto/upload-document.dto';
 import { LegalDocumentService } from './legal-document.service';
+import { CaseOwnerGuard } from 'src/guards/case-owner.guard';
 
 @Controller('legal-document')
 @UseGuards(AuthenticatedUser)
@@ -29,14 +30,19 @@ export class LegalDocumentController {
 
   // TODO: Implement file extension filter here
   // TODO: Delete s3 when upload fails
-  @Post('upload/:caseId')
   @UseInterceptors(FileInterceptor('file'))
+  @UseGuards(CaseOwnerGuard)
+  @Post('upload/:caseId')
   async createDocument(
     @Param('caseId', ObjectIdValidationPipe) caseId: string,
     @UploadedFile() file: Express.Multer.File,
     @CurrentUser() user: User,
     @Body() uploadDocumentDto: UploadDocumentDto,
   ) {
+
+
+
+    return true;
     const filename = this.s3Service.filenameToS3Key(file.originalname);
     const path = `cases/${caseId}/${filename}`;
 
