@@ -11,6 +11,16 @@ export enum LegalDocumentType {
   Miscellaneous = 'miscellaneous',
 }
 
+export enum AllowedDocumentType {
+  DOC = '.doc',
+  DOCX = '.docx',
+  TXT = '.txt',
+  PDF = '.pdf',
+  PNG = '.png',
+  JPG = '.jpg'
+}
+
+export const documentMaxFileSize = 5 * 1024 * 1024; // 5MB
 
 @Schema()
 export class LegalDocument extends Document {

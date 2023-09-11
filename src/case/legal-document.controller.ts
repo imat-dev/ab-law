@@ -1,7 +1,7 @@
 import {
+  BadRequestException,
   Body,
   Controller,
-  HttpException,
   InternalServerErrorException,
   Param,
   Post,
@@ -11,14 +11,18 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { User } from 'src/auth/entities/user.entity';
-import { Roles } from 'src/guards/roles.decorator';
 import { AuthenticatedUser } from 'src/auth/strategy/auth.guard.jwt';
 import { CurrentUser } from 'src/auth/strategy/current.user.decorator';
-import { S3Service } from 'src/aws/s3/s3.service';
-import { ObjectIdValidationPipe } from 'src/pipes/valid-object-id';
+import { S3Service } from 'src/common/aws/s3/s3.service';
+import { ObjectIdValidationPipe } from 'src/common/pipes/valid-object-id';
 import { UploadDocumentDto } from './dto/upload-document.dto';
 import { LegalDocumentService } from './legal-document.service';
-import { CaseOwnerGuard } from 'src/guards/case-owner.guard';
+import { CaseOwnerGuard } from 'src/common/guards/case-owner.guard';
+import {
+  AllowedDocumentType,
+  documentMaxFileSize,
+} from './entities/legal-document.entity';
+import { legalDocFileFilter } from './filters/allowed-legal-document.filter';
 
 @Controller('legal-document')
 @UseGuards(AuthenticatedUser)
@@ -28,9 +32,13 @@ export class LegalDocumentController {
     private readonly legalDocumentService: LegalDocumentService,
   ) {}
 
-  // TODO: Implement file extension filter here
-  // TODO: Delete s3 when upload fails
-  @UseInterceptors(FileInterceptor('file'))
+  // TODO: Make sure to not override files on s3
+  @UseInterceptors(
+    FileInterceptor('file', {
+      fileFilter: legalDocFileFilter,
+      limits: { fileSize: documentMaxFileSize },
+    }),
+  )
   @UseGuards(CaseOwnerGuard)
   @Post('upload/:caseId')
   async createDocument(
@@ -39,10 +47,11 @@ export class LegalDocumentController {
     @CurrentUser() user: User,
     @Body() uploadDocumentDto: UploadDocumentDto,
   ) {
+    //file request will be undefined in legalDocFileFilter if not allowed
+    if (!file) {
+      throw new BadRequestException('Invalid file type.');
+    }
 
-
-
-    return true;
     const filename = this.s3Service.filenameToS3Key(file.originalname);
     const path = `cases/${caseId}/${filename}`;
 
@@ -53,7 +62,6 @@ export class LegalDocumentController {
       buffer: file.buffer,
     };
 
-    //check if Current User is allowed to upload in case, check if theyre client or lawyer
     const s3Object = await this.s3Service.uploadFile(s3Params);
     if (!s3Object) {
       throw new InternalServerErrorException(
@@ -74,17 +82,24 @@ export class LegalDocumentController {
       user: user.id,
     };
 
-    const newDocument = (await this.legalDocumentService.saveDocument(newFile)).toObject();
+    const newDocument = (
+      await this.legalDocumentService.saveDocument(newFile)
+    ).toObject();
 
     if (!newDocument) {
+      //rollback delete file
+      await this.s3Service.deleteFile({
+        key: s3Object.Key,
+        bucket: s3Object.Bucket,
+      });
       throw new InternalServerErrorException(
         'Fail uploading and saving the document.',
       );
     }
 
     return {
-      ...newDocument, 
-      message : 'Document uploaded successfully!'
+      ...newDocument,
+      message: 'Document uploaded successfully!',
     };
   }
 }

@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { CaseSchema } from 'src/case/entities/case.entity';
 import { LegalDocument } from './entities/legal-document.entity';
 import { Model } from 'mongoose';
 import { UploadDocumentDto } from './dto/upload-document.dto';

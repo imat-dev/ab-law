@@ -7,7 +7,7 @@ import { CaseService } from './case.service';
 import { LawyerService } from './lawyer.service';
 import { LawyerController } from './lawyer.controller';
 import { LegalDocumentController } from './legal-document.controller';
-import { S3Service } from 'src/aws/s3/s3.service';
+import { S3Service } from 'src/common/aws/s3/s3.service';
 import { LegalDocument, LegalDocumentSchema } from './entities/legal-document.entity';
 import { LegalDocumentService } from './legal-document.service';
 @Module({

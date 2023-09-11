@@ -2,8 +2,8 @@ import { Body, Controller, Get, Param, Patch, Post, UseGuards } from '@nestjs/co
 import { CreateCaseDto } from './dto/create-case.dto';
 import { CaseService } from './case.service';
 import { AuthenticatedUser } from 'src/auth/strategy/auth.guard.jwt';
-import { Roles } from 'src/guards/roles.decorator';
-import { RolesGuard } from 'src/guards/roles.guard';
+import { Roles } from 'src/common/guards/roles.decorator';
+import { RolesGuard } from 'src/common/guards/roles.guard';
 import { CurrentUser } from 'src/auth/strategy/current.user.decorator';
 import { User } from 'src/auth/entities/user.entity';
 
