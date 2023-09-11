@@ -4,8 +4,8 @@ import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ClientModule } from './client/client.module';
 import { CaseModule } from './case/case.module';
-import { S3Service } from './aws/s3/s3.service';
-import awsConfig from './config/aws.config';
+import { S3Service } from './common/aws/s3/s3.service';
+import awsConfig from './common/config/aws.config';
 
 @Module({
   imports: [

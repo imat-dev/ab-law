@@ -6,12 +6,12 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { User } from 'src/auth/entities/user.entity';
-import { Roles } from 'src/guards/roles.decorator';
-import { RolesGuard } from 'src/guards/roles.guard';
+import { Roles } from 'src/common/guards/roles.decorator';
+import { RolesGuard } from 'src/common/guards/roles.guard';
 import { AuthenticatedUser } from 'src/auth/strategy/auth.guard.jwt';
 import { CurrentUser } from 'src/auth/strategy/current.user.decorator';
 import { CaseService } from './case.service';
-import { ObjectIdValidationPipe } from 'src/pipes/valid-object-id';
+import { ObjectIdValidationPipe } from 'src/common/pipes/valid-object-id';
 
 @Controller('lawyer')
 @Roles(['lawyer'])

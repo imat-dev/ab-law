@@ -9,8 +9,8 @@ import {
 } from '@nestjs/common';
 import { AuthenticatedUser } from './strategy/auth.guard.jwt';
 import { CreateUserDto } from './dto/create-user.dto';
-import { RolesGuard } from 'src/guards/roles.guard';
-import { Roles } from 'src/guards/roles.decorator';
+import { RolesGuard } from 'src/common/guards/roles.guard';
+import { Roles } from 'src/common/guards/roles.decorator';
 import { UserService } from './user.service';
 import { AuthService } from './auth.service';
 

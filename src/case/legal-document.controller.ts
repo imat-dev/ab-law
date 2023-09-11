@@ -1,7 +1,6 @@
 import {
   Body,
   Controller,
-  HttpException,
   InternalServerErrorException,
   Param,
   Post,
@@ -13,11 +12,11 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { User } from 'src/auth/entities/user.entity';
 import { AuthenticatedUser } from 'src/auth/strategy/auth.guard.jwt';
 import { CurrentUser } from 'src/auth/strategy/current.user.decorator';
-import { S3Service } from 'src/aws/s3/s3.service';
-import { ObjectIdValidationPipe } from 'src/pipes/valid-object-id';
+import { S3Service } from 'src/common/aws/s3/s3.service';
+import { ObjectIdValidationPipe } from 'src/common/pipes/valid-object-id';
 import { UploadDocumentDto } from './dto/upload-document.dto';
 import { LegalDocumentService } from './legal-document.service';
-import { CaseOwnerGuard } from 'src/guards/case-owner.guard';
+import { CaseOwnerGuard } from 'src/common/guards/case-owner.guard';
 
 @Controller('legal-document')
 @UseGuards(AuthenticatedUser)
