@@ -11,7 +11,6 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { User } from 'src/auth/entities/user.entity';
-import { Roles } from 'src/guards/roles.decorator';
 import { AuthenticatedUser } from 'src/auth/strategy/auth.guard.jwt';
 import { CurrentUser } from 'src/auth/strategy/current.user.decorator';
 import { S3Service } from 'src/aws/s3/s3.service';
@@ -39,10 +38,6 @@ export class LegalDocumentController {
     @CurrentUser() user: User,
     @Body() uploadDocumentDto: UploadDocumentDto,
   ) {
-
-
-
-    return true;
     const filename = this.s3Service.filenameToS3Key(file.originalname);
     const path = `cases/${caseId}/${filename}`;
 
@@ -74,7 +69,9 @@ export class LegalDocumentController {
       user: user.id,
     };
 
-    const newDocument = (await this.legalDocumentService.saveDocument(newFile)).toObject();
+    const newDocument = (
+      await this.legalDocumentService.saveDocument(newFile)
+    ).toObject();
 
     if (!newDocument) {
       throw new InternalServerErrorException(
@@ -83,8 +80,8 @@ export class LegalDocumentController {
     }
 
     return {
-      ...newDocument, 
-      message : 'Document uploaded successfully!'
+      ...newDocument,
+      message: 'Document uploaded successfully!',
     };
   }
 }
