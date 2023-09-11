@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   InternalServerErrorException,
@@ -17,6 +18,11 @@ import { ObjectIdValidationPipe } from 'src/common/pipes/valid-object-id';
 import { UploadDocumentDto } from './dto/upload-document.dto';
 import { LegalDocumentService } from './legal-document.service';
 import { CaseOwnerGuard } from 'src/common/guards/case-owner.guard';
+import {
+  AllowedDocumentType,
+  documentMaxFileSize,
+} from './entities/legal-document.entity';
+import { legalDocFileFilter } from './filters/allowed-legal-document.filter';
 
 @Controller('legal-document')
 @UseGuards(AuthenticatedUser)
@@ -26,9 +32,13 @@ export class LegalDocumentController {
     private readonly legalDocumentService: LegalDocumentService,
   ) {}
 
-  // TODO: Implement file extension filter here
-  // TODO: Delete s3 when upload fails
-  @UseInterceptors(FileInterceptor('file'))
+  // TODO: Make sure to not override files on s3
+  @UseInterceptors(
+    FileInterceptor('file', {
+      fileFilter: legalDocFileFilter,
+      limits: { fileSize: documentMaxFileSize },
+    }),
+  )
   @UseGuards(CaseOwnerGuard)
   @Post('upload/:caseId')
   async createDocument(
@@ -37,6 +47,11 @@ export class LegalDocumentController {
     @CurrentUser() user: User,
     @Body() uploadDocumentDto: UploadDocumentDto,
   ) {
+    //file request will be undefined in legalDocFileFilter if not allowed
+    if (!file) {
+      throw new BadRequestException('Invalid file type.');
+    }
+
     const filename = this.s3Service.filenameToS3Key(file.originalname);
     const path = `cases/${caseId}/${filename}`;
 
@@ -47,7 +62,6 @@ export class LegalDocumentController {
       buffer: file.buffer,
     };
 
-    //check if Current User is allowed to upload in case, check if theyre client or lawyer
     const s3Object = await this.s3Service.uploadFile(s3Params);
     if (!s3Object) {
       throw new InternalServerErrorException(
@@ -73,6 +87,11 @@ export class LegalDocumentController {
     ).toObject();
 
     if (!newDocument) {
+      //rollback delete file
+      await this.s3Service.deleteFile({
+        key: s3Object.Key,
+        bucket: s3Object.Bucket,
+      });
       throw new InternalServerErrorException(
         'Fail uploading and saving the document.',
       );

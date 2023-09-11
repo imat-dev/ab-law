@@ -3,6 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Case } from 'src/case/entities/case.entity';
 
+//check if the case is owned by a lawyer or client
 @Injectable()
 export class CaseOwnerGuard implements CanActivate {
   constructor(

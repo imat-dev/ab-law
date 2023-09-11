@@ -29,20 +29,18 @@ export class S3Service {
     return await this.s3.upload(params).promise();
   }
 
+  async deleteFile(file: any) {
+    const params = {
+      Bucket: file.bucket,
+      Key: file.key,
+    };
+    return await this.s3.deleteObject(params).promise();
+  }
+
   filenameToS3Key(filename: string): string {
     let key = filename.replace(/\s+/g, '-');
     key = key.replace(/[?&#]/g, '');
     key = key.toLowerCase();
     return key;
   }
-
-
-  testfunction() {
-    console.log('hey')
-    console.log('he2')
-    console.log('he3')
-
-  }
-
-
 }
